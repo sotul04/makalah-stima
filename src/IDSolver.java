@@ -1,3 +1,4 @@
+package src;
 
 public class IDSolver {
     private Puzzle puzzle;
@@ -30,9 +31,10 @@ public class IDSolver {
             solution = currPuzzle;
             return;
         }
-        for (Point move : Puzzle.MOVEMENTS) {
+        for (String keys : Puzzle.MOVEMENTS.keySet()) {
+            Point move = Puzzle.MOVEMENTS.get(keys);
             if (currPuzzle.isMoveValid(move)) {
-                Puzzle generated = new Puzzle(currPuzzle, move);
+                Puzzle generated = new Puzzle(currPuzzle, move, keys);
                 worker(generated, maxDepth, depth+1);
             }
         }
@@ -52,18 +54,26 @@ public class IDSolver {
 
     public static void main(String[] args) {
         Puzzle problem = new Puzzle();
-        int[] probs = new int[]{4,1,2,6,7,8,5,3,9};
+        int[] probs = new int[]{};
         problem.setFormation(probs);
         problem.setEmptyPoint(2, 2);
+        
         IDSolver solver = new IDSolver(problem);
+        
+        long start = System.currentTimeMillis();
+        
         solver.search();
         
+        long end = System.currentTimeMillis();
+        long diff = end - start;
+        System.out.println("Waktu pencarian: "+diff+"ms");
+
         if (solver.isFound()) {
-            System.out.println("Banyak node dikunjungi: " + solver.getCounterVisited() + "\nSolusi - "+solver.getSolution().length+":");
+            System.out.println("Banyak node dikunjungi: " + solver.getCounterVisited() + "\nSolusi - dengan panjang lintasan: "+solver.getSolution().length+":");
             solver.getSolution().displayPath();
+            solver.getSolution().displayDirection();
         } else {
             System.out.println("No Solution found, counter: " + solver.getCounterVisited());
         }
-
     }
 }

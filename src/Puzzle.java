@@ -1,4 +1,6 @@
-import java.util.ArrayList;
+package src;
+
+import java.util.HashMap;
 
 public class Puzzle {
     
@@ -16,6 +18,8 @@ public class Puzzle {
      * Posisi ubin kosong saat ini
      */
     private Point emptyPoint;
+
+    private String direction = null;
 
     /*
      * Nilai g(n) dan h(n)
@@ -37,14 +41,16 @@ public class Puzzle {
      * UP = Point(0,-1)
      * DOWN = Point(0,1)
      */
-    public static ArrayList<Point> MOVEMENTS;
+    // public static ArrayList<Point> MOVEMENTS;
+
+    public static HashMap<String, Point> MOVEMENTS;
 
     static {
-        MOVEMENTS = new ArrayList<>();
-        MOVEMENTS.add(new Point(-1,0));
-        MOVEMENTS.add(new Point(1,0));
-        MOVEMENTS.add(new Point(0,-1));
-        MOVEMENTS.add(new Point(0,1));
+        MOVEMENTS = new HashMap<>();
+        MOVEMENTS.put("LEFT", new Point(-1,0));
+        MOVEMENTS.put("RIGHT", new Point(1,0));
+        MOVEMENTS.put("UP", new Point(0,-1));
+        MOVEMENTS.put("DOWN", new Point(0,1));
     }
     
     public Puzzle() {
@@ -55,10 +61,11 @@ public class Puzzle {
         unmatch = countUnmatch();
     }
 
-    public Puzzle(Puzzle other, Point move) {
+    public Puzzle(Puzzle other, Point move, String direction) {
         formation = new Matrix(other.formation);
         parent = other;
         emptyPoint = new Point(other.emptyPoint);
+        this.direction = direction;
         move(move);
         length = other.length+1;
         unmatch = countUnmatch();
@@ -166,7 +173,9 @@ public class Puzzle {
         if (parent != null) {
             parent.displayPath();
         }
-        System.out.println("Snapshot:");
+        if (direction != null) {
+            System.out.println(direction);
+        }
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 System.out.print(get(i,j)+"\t");
@@ -174,5 +183,19 @@ public class Puzzle {
             System.out.println();
         }
         System.out.println();
+    }
+
+    public void displayDirection() {
+        displayDirectionOnly();
+        System.out.println();
+    }
+
+    private void displayDirectionOnly() {
+        if (parent != null) {
+            parent.displayDirectionOnly();
+        }
+        if (direction != null) {
+            System.out.print(direction+" ");
+        }
     }
 }

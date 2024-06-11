@@ -1,3 +1,5 @@
+package src;
+
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.PriorityQueue;
@@ -23,10 +25,12 @@ public class BnBSolver {
 
     public void search() {
         queue.add(puzzle);
-        visited.add(puzzle.getFormation());
+        // visited.add(puzzle.getFormation());
 
         while (!queue.isEmpty() && !found) {
             Puzzle currPuzzle = queue.poll();
+            visited.add(currPuzzle.getFormation());
+
             counter++;
 
             if (currPuzzle.isFinished()) {
@@ -52,12 +56,12 @@ public class BnBSolver {
                 queue = filtered;
                 continue;
             }
-            for (Point move : Puzzle.MOVEMENTS) {
+            for (String key : Puzzle.MOVEMENTS.keySet()) {
+                Point move = Puzzle.MOVEMENTS.get(key);
                 if (currPuzzle.isMoveValid(move)) {
-                    Puzzle generated = new Puzzle(currPuzzle, move);
+                    Puzzle generated = new Puzzle(currPuzzle, move, key);
                     if (!visited.contains(generated.getFormation())) {
                         queue.add(generated);
-                        visited.add(generated.getFormation());
                     }
                 }
             }
@@ -78,36 +82,28 @@ public class BnBSolver {
     
     public static void main(String[] args) {
         Puzzle problem = new Puzzle();
-        int[] probs = new int[]{4,1,2,6,7,8,5,3,9};
+        
+        int[] probs = new int[]{1,7,5,4,2,6,8,3,9};
+        
         problem.setFormation(probs);
         problem.setEmptyPoint(2, 2);
+        
         BnBSolver solver = new BnBSolver(problem);
 
-        // Runnable thread = new Runnable() {
-        //     @Override
-        //     public void run() {
-        //         while (!Thread.currentThread().isInterrupted()) {
-        //             try {
-        //                 System.out.println("Banyak node: " + solver.getCounterVisited());
-        //                 Thread.sleep(2000);
-        //             } catch (InterruptedException e) {
-        //                 Thread.currentThread().interrupt();
-        //             }
-        //         }
-        //     }
-        // };
-
-        // Thread checkThread = new Thread(thread);
-        // checkThread.start();
+        long start = System.currentTimeMillis();
+        
         solver.search();
+        long end = System.currentTimeMillis();
+        long diff = end - start;
+        System.out.println("Waktu pencarian: "+diff+"ms");
         
         if (solver.isFound()) {
-            System.out.println("Banyak node dikunjungi: " + solver.getCounterVisited() + "\nSolusi - "+solver.getSolution().length+":");
+            System.out.println("Banyak node dikunjungi: " + solver.getCounterVisited() + "\nSolusi - dengan panjang lintasan: "+solver.getSolution().length+":");
             solver.getSolution().displayPath();
+            solver.getSolution().displayDirection();
         } else {
             System.out.println("No Solution found, counter: " + solver.getCounterVisited());
         }
-        // checkThread.interrupt();
     }
 }
 
