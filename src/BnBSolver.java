@@ -79,32 +79,6 @@ public class BnBSolver {
     public int getCounterVisited() {
         return counter;
     }
-    
-    public static void main(String[] args) {
-        Puzzle problem = new Puzzle();
-        
-        int[] probs = new int[]{1,7,5,4,2,6,8,3,9};
-        
-        problem.setFormation(probs);
-        problem.setEmptyPoint(2, 2);
-        
-        BnBSolver solver = new BnBSolver(problem);
-
-        long start = System.currentTimeMillis();
-        
-        solver.search();
-        long end = System.currentTimeMillis();
-        long diff = end - start;
-        System.out.println("Waktu pencarian: "+diff+"ms");
-        
-        if (solver.isFound()) {
-            System.out.println("Banyak node dikunjungi: " + solver.getCounterVisited() + "\nSolusi - dengan panjang lintasan: "+solver.getSolution().length+":");
-            solver.getSolution().displayPath();
-            solver.getSolution().displayDirection();
-        } else {
-            System.out.println("No Solution found, counter: " + solver.getCounterVisited());
-        }
-    }
 }
 
 class BnBComparator implements Comparator<Puzzle> {
